@@ -33,5 +33,19 @@ namespace HPlusSport.API.Controllers
             }
             return Ok(product);
         }
+        [HttpPost]
+        public async Task<ActionResult<Product>> PostProduct(Product product)
+        {
+             _context.Products.Add(product); //Passing in the product, via model binding.
+                                             //Dont need to create a new product and pass the properties of the arg to tne new prop
+            await _context.SaveChangesAsync();
+            //We want to return the newly created product id for the user. We call CreateAtAction helper method to pull the id.
+            // since the id is generated in the db, we need to do a query.
+            //CreatedAtAction is status code 201, which is the correct one for a post
+            return CreatedAtAction(
+                "GetProduct",
+                new { id = product.Id },
+                product);
+        }
     }
 }
