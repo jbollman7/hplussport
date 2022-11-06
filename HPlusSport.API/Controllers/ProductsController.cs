@@ -23,5 +23,12 @@ namespace HPlusSport.API.Controllers
             return Ok(products);
 
         }
+        // alt. Route("/products/{id}")
+        [HttpGet("{id}")] //embedding the route
+        public ActionResult<Product> GetProduct(int id)
+        {
+            var product = _context.Products.Find(id);
+            return Ok(product);
+        }
     }
 }
