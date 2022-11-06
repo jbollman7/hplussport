@@ -67,5 +67,16 @@ namespace HPlusSport.API.Controllers
             }
             return NoContent(); //204 - idempotent. Do not return nothing.
         }
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Product>> DeleteProduct(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product is null)
+                return NotFound();
+
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+            return product; //return deleted product
+        }
     }
 }
