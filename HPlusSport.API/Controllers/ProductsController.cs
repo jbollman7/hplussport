@@ -18,9 +18,13 @@ namespace HPlusSport.API.Controllers
             _context.Database.EnsureCreated();
         }
         [HttpGet]
-        public async Task<ActionResult> GetAllProducts()
+        public async Task<ActionResult> GetAllProducts([FromQuery]QueryParameters queryParameters)
         {
-            return Ok(await _context.Products.ToListAsync());
+            // We want to return parts of the product
+            IQueryable<Product> products = _context.Products;
+            products = products.Skip(queryParameters.Size * (queryParameters.Page - 1))
+                                .Take(queryParameters.Size);
+            return Ok(await products.ToListAsync());
         }
         // alt. Route("/products/{id}") route url
         [HttpGet("{id}")] //route template
@@ -77,6 +81,28 @@ namespace HPlusSport.API.Controllers
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
             return product; //return deleted product
+        }
+        [HttpPost]
+        [Route("Delete")]
+        public async Task<ActionResult> DeleteMultiple([FromQuery] int[] ids)
+        {
+            var products = new List<Product>();
+            foreach (var id in ids)
+            {
+                var product = await _context.Products.FindAsync(id);
+
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                products.Add(product);
+            }
+
+            _context.Products.RemoveRange(products);
+            await _context.SaveChangesAsync();
+
+            return Ok(products);
         }
     }
 }
