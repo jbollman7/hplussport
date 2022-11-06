@@ -18,10 +18,22 @@ namespace HPlusSport.API.Controllers
             _context.Database.EnsureCreated();
         }
         [HttpGet]
-        public async Task<ActionResult> GetAllProducts([FromQuery]QueryParameters queryParameters)
+        public async Task<ActionResult> GetAllProducts([FromQuery]ProductQueryParameters queryParameters)
         {
             // We want to return parts of the product
             IQueryable<Product> products = _context.Products;
+            if (queryParameters.MinPrice is not null)
+            {
+                products = products.Where(
+                    p => p.Price >= queryParameters.MinPrice.Value);
+                    
+            }
+            if (queryParameters.MaxPrice is not null)
+            {
+                products = products.Where(
+                    p => p.Price<= queryParameters.MaxPrice.Value);
+            }
+
             products = products.Skip(queryParameters.Size * (queryParameters.Page - 1))
                                 .Take(queryParameters.Size);
             return Ok(await products.ToListAsync());
