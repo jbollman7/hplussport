@@ -22,8 +22,8 @@ namespace HPlusSport.API.Controllers
         {
             return Ok(await _context.Products.ToListAsync());
         }
-        // alt. Route("/products/{id}")
-        [HttpGet("{id}")] //embedding the route
+        // alt. Route("/products/{id}") route url
+        [HttpGet("{id}")] //route template
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);
@@ -46,6 +46,26 @@ namespace HPlusSport.API.Controllers
                 "GetProduct",
                 new { id = product.Id },
                 product);
+        }
+        [HttpPut("{id}")] //route template
+        public async Task<ActionResult<Product>> PutProduct(int id, Product product)
+        {
+            if (id != product.Id)
+                return BadRequest();
+            _context.Entry(product).State = EntityState.Modified;
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException) //Catches if product was updated async at same time by another method
+            {
+                // two scenarios, the product is deleted, or product was update
+                if (!_context.Products.Any(p => p.Id == id))
+                    return NotFound();
+                else
+                    throw; // general error.
+            }
+            return NoContent(); //204 - idempotent. Do not return nothing.
         }
     }
 }
