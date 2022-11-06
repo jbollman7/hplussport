@@ -17,9 +17,11 @@ namespace HPlusSport.API.Controllers
             _context.Database.EnsureCreated();
         }
         [HttpGet]
-        public IEnumerable<Product> GetAllProducts()
+        public ActionResult<IEnumerable<Product>> GetAllProducts()
         {
-            return _context.Products.ToList();
+            var products = _context.Products.ToList();
+            return Ok(products);
+
         }
     }
 }
