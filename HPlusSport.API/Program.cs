@@ -11,6 +11,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddResponseCaching(x => x.MaximumBodySize = 1024); // Updated Cache from 64MB to 1MB
 
 builder.Services.AddDbContext<ShopContext>(options => options.UseInMemoryDatabase("Shop"));
 var app = builder.Build();
@@ -28,6 +29,19 @@ app.UseAuthorization();
 
 
 app.MapControllers();
-
+app.UseResponseCaching();
+// Cache middleware
+app.Use(async (context, next) =>
+{
+    context.Response.GetTypedHeaders().CacheControl =
+        new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+        {
+            Public = true,
+            MaxAge = TimeSpan.FromSeconds(10),
+        };
+    context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] = new string[] { "Accept-Encoding" }; // you can specify cache options based on content (html, css, etc)
+    
+    await next();
+});
 app.Run();
 

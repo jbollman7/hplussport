@@ -17,6 +17,12 @@ namespace HPlusSport.API.Controllers
             //Make sure were seeding db
             _context.Database.EnsureCreated();
         }
+        [HttpGet("/seconds")] //hostname:port/seconds
+        public int Get()
+        {
+            return DateTime.Now.Second;
+        }
+        
         [HttpGet]
         public async Task<ActionResult> GetAllProducts([FromQuery]ProductQueryParameters queryParameters)
         {
