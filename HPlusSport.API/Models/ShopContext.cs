@@ -20,7 +20,7 @@ namespace HPlusSport.API.Models
                 .WithOne(a => a.Category)
                 .HasForeignKey(a => a.CategoryId);
 
-            modelBuilder.Seed();
+            //modelBuilder.Seed();
         }
 
         public DbSet<Product> Products { get; set; }

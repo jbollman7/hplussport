@@ -13,7 +13,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddResponseCaching(x => x.MaximumBodySize = 1024); // Updated Cache from 64MB to 1MB
 
-builder.Services.AddDbContext<ShopContext>(options => options.UseInMemoryDatabase("Shop"));
+
+var connectionString = builder.Configuration.GetConnectionString("ShopConnection");
+//builder.Services.AddDbContext<ShopContext>(options => options.UseInMemoryDatabase("Shop"));
+builder.Services.AddDbContext<ShopContext>(options => options.UseSqlServer(connectionString));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,7 +40,7 @@ app.Use(async (context, next) =>
         new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
         {
             Public = true,
-            MaxAge = TimeSpan.FromSeconds(10),
+            MaxAge = TimeSpan.FromMinutes(10),
         };
     context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] = new string[] { "Accept-Encoding" }; // you can specify cache options based on content (html, css, etc)
     

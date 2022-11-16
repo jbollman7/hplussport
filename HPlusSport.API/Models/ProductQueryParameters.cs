@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,9 @@ namespace HPlusSport.API.Models
 {
     public class ProductQueryParameters : QueryParameters
     {
+        [Precision(18, 2)]
         public decimal? MinPrice { get; set; }
+        [Precision(18, 2)]
         public decimal? MaxPrice { get; set; }
     }
 }
