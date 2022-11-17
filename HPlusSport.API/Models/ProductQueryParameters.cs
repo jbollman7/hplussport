@@ -13,5 +13,7 @@ namespace HPlusSport.API.Models
         public decimal? MinPrice { get; set; }
         [Precision(18, 2)]
         public decimal? MaxPrice { get; set; }
+        public string Sku { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
     }
 }

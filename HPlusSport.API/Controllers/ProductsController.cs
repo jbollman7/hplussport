@@ -31,15 +31,24 @@ namespace HPlusSport.API.Controllers
             if (queryParameters.MinPrice is not null)
             {
                 products = products.Where(
-                    p => p.Price >= queryParameters.MinPrice.Value);
-                    
+                    p => p.Price >= queryParameters.MinPrice.Value);  
             }
             if (queryParameters.MaxPrice is not null)
             {
                 products = products.Where(
-                    p => p.Price<= queryParameters.MaxPrice.Value);
+                    p => p.Price <= queryParameters.MaxPrice.Value);
+            }
+            //search
+            if (!string.IsNullOrEmpty(queryParameters.Sku))
+            {
+                products = products.Where(p => p.Sku == queryParameters.Sku);
+            }
+            if (!string.IsNullOrEmpty(queryParameters.Name))
+            {
+                products = products.Where(p => p.Name.ToLower().Contains(queryParameters.Name.ToLower()));
             }
 
+            //pagination
             products = products.Skip(queryParameters.Size * (queryParameters.Page - 1))
                                 .Take(queryParameters.Size);
             return Ok(await products.ToListAsync());

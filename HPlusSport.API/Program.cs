@@ -40,7 +40,7 @@ app.Use(async (context, next) =>
         new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
         {
             Public = true,
-            MaxAge = TimeSpan.FromMinutes(10),
+            MaxAge = TimeSpan.FromMinutes(1),
         };
     context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] = new string[] { "Accept-Encoding" }; // you can specify cache options based on content (html, css, etc)
     
